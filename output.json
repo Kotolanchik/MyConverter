@@ -1,0 +1,39 @@
+{
+  "rams" : [ {
+    "firm" : "Apple",
+    "ram" : [ {
+      "idRam" : 0,
+      "firm" : null,
+      "title" : "ccc",
+      "releaseYear" : 2010,
+      "department" : "RAM",
+      "specifications" : {
+        "clockFrequency" : 1000,
+        "memory" : 1500
+      }
+    }, {
+      "idRam" : 2,
+      "firm" : null,
+      "title" : "aaa",
+      "releaseYear" : 2004,
+      "department" : "RAM",
+      "specifications" : {
+        "clockFrequency" : 3000,
+        "memory" : 3600
+      }
+    } ]
+  }, {
+    "firm" : "DNS",
+    "ram" : [ {
+      "idRam" : 1,
+      "firm" : null,
+      "title" : "bbb",
+      "releaseYear" : 2005,
+      "department" : "RAM",
+      "specifications" : {
+        "clockFrequency" : 2000,
+        "memory" : 2500
+      }
+    } ]
+  } ]
+}
