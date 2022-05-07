@@ -8,7 +8,7 @@
       "releaseYear" : 2010,
       "specifications" : {
         "clockFrequency" : 1000,
-        "memory" : 1500
+        "memory" : 1000
       }
     }, {
       "idRam" : 2,
@@ -17,7 +17,16 @@
       "releaseYear" : 2004,
       "specifications" : {
         "clockFrequency" : 3000,
-        "memory" : 3600
+        "memory" : 3000
+      }
+    }, {
+      "idRam" : 4,
+      "firm" : null,
+      "title" : "AYYYYY",
+      "releaseYear" : 2001,
+      "specifications" : {
+        "clockFrequency" : 300,
+        "memory" : 300
       }
     } ]
   }, {
@@ -29,7 +38,16 @@
       "releaseYear" : 2005,
       "specifications" : {
         "clockFrequency" : 2000,
-        "memory" : 2500
+        "memory" : 2000
+      }
+    }, {
+      "idRam" : 3,
+      "firm" : null,
+      "title" : "bbb",
+      "releaseYear" : 2005,
+      "specifications" : {
+        "clockFrequency" : 2000,
+        "memory" : 2000
       }
     } ]
   } ]

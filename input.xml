@@ -27,4 +27,22 @@
     </specifications>
     <releaseYear>2004</releaseYear>
   </ram>
+  <ram idRam="3">
+    <title>bbb</title>
+    <firm>DNS</firm>
+    <specifications>
+      <memory>2500</memory>
+      <clockFrequency>2000</clockFrequency>
+    </specifications>
+    <releaseYear>2005</releaseYear>
+  </ram>
+  <ram idRam="4">
+    <title>AYYYYY</title>
+    <firm>Apple</firm>
+    <specifications>
+      <memory>3400</memory>
+      <clockFrequency>300</clockFrequency>
+    </specifications>
+    <releaseYear>2001</releaseYear>
+  </ram>
 </rams>
