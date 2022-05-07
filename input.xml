@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rams department="RAM">
-    <ram idRam="0">
-        <title>ccc</title>
-        <firm>Apple</firm>
-        <specifications>
-            <memory>1000</memory>
-            <clockFrequency>1500</clockFrequency>
-        </specifications>
-        <releaseYear>2010</releaseYear>
-    </ram>
-    <ram idRam="1">
-        <title>bbb</title>
-        <firm>DNS</firm>
-        <specifications>
-            <memory>2000</memory>
-            <clockFrequency>2500</clockFrequency>
-        </specifications>
-        <releaseYear>2005</releaseYear>
-    </ram>
-    <ram idRam="2">
-        <title>aaa</title>
-        <firm>Apple</firm>
-        <specifications>
-            <memory>3000</memory>
-            <clockFrequency>3600</clockFrequency>
-        </specifications>
-        <releaseYear>2004</releaseYear>
-    </ram>
+<rams>
+  <ram idRam="0">
+    <title>ccc</title>
+    <firm>Apple</firm>
+    <specifications>
+      <memory>1500</memory>
+      <clockFrequency>1000</clockFrequency>
+    </specifications>
+    <releaseYear>2010</releaseYear>
+  </ram>
+  <ram idRam="1">
+    <title>bbb</title>
+    <firm>DNS</firm>
+    <specifications>
+      <memory>2500</memory>
+      <clockFrequency>2000</clockFrequency>
+    </specifications>
+    <releaseYear>2005</releaseYear>
+  </ram>
+  <ram idRam="2">
+    <title>aaa</title>
+    <firm>Apple</firm>
+    <specifications>
+      <memory>3600</memory>
+      <clockFrequency>3000</clockFrequency>
+    </specifications>
+    <releaseYear>2004</releaseYear>
+  </ram>
 </rams>

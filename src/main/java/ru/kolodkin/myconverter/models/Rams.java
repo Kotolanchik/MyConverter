@@ -17,6 +17,8 @@ public class Rams {
     public Rams() {
     }
 
+    public Rams(String firm) {this.firm = firm;}
+
     public Rams(List<Ram> ram, String firm) {
         this.ram = ram;
         this.firm = firm;

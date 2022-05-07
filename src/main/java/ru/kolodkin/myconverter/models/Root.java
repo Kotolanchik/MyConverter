@@ -6,7 +6,7 @@ import java.util.List;
 * Обёртка.
 * */
 public class Root {
-    private List<Rams> rams;
+    public List<Rams> rams;
 
     public Root() {
     }

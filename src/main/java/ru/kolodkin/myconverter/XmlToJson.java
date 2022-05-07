@@ -31,7 +31,6 @@ public class XmlToJson {
         document.getDocumentElement().normalize();
 
         Element ramsElement = (Element) document.getElementsByTagName("rams").item(0);
-        String department = ramsElement.getAttribute("department");
 
         // Получение списка всех элементов employee внутри корневого элемента (getDocumentElement возвращает ROOT элемент XML файла).
         NodeList ramNodeList = document.getDocumentElement().getElementsByTagName("ram");
@@ -44,7 +43,6 @@ public class XmlToJson {
 
                 Ram ram = new Ram();
 
-                ram.setDepartment(department);
                 ram.setIdRam(Integer.valueOf(ramElement.getAttributes().getNamedItem("idRam").getNodeValue()));
 
                 NodeList childNodes = ramElement.getChildNodes();
@@ -118,7 +116,6 @@ public class XmlToJson {
                             ramList.get(j).getIdRam(),
                             ramList.get(j).getTitle(),
                             ramList.get(j).getReleaseYear(),
-                            ramList.get(j).getDepartment(),
                             ramList.get(j).getSpecifications()));
                 }
             }
@@ -128,7 +125,20 @@ public class XmlToJson {
         ObjectMapper mapper = new ObjectMapper();
         String jsonString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(root);
 
-        mapper.writerWithDefaultPrettyPrinter().writeValue(new File("output.json"), root);
+        mapper.writerWithDefaultPrettyPrinter().writeValue(new File("outpuTTTt.json"), root);
         System.out.println(jsonString);
+    }
+
+    public static Document readXml(String path) throws ParserConfigurationException, IOException, SAXException {
+        // Получение фабрики, чтобы после получить билдер документов.
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+
+        // Получили из фабрики билдер, который парсит XML, создает структуру Document в виде иерархического дерева.
+        DocumentBuilder documentBuilder = factory.newDocumentBuilder();
+
+        // Запарсили XML, создав структуру Document. Теперь у нас есть доступ ко всем элементам, каким нам ну84884жно.
+        Document document = documentBuilder.parse(new File("input.xml"));
+        document.getDocumentElement().normalize();
+        return document;
     }
 }

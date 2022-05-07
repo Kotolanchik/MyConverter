@@ -8,30 +8,20 @@ public class Ram {
     private String firm;
     private String title;
     private int releaseYear;
-    private String department;
     private Specifications specifications = new Specifications();
 
     public Ram() {
     }
 
-    public Ram(int idRam, String title, int releaseYear, String department, Specifications specifications) {
+    public Ram(int idRam, String title, int releaseYear, Specifications specifications) {
         this.idRam = idRam;
         this.title = title;
         this.releaseYear = releaseYear;
-        this.department = department;
         this.specifications = specifications;
     }
 
     public Specifications getSpecifications() {
         return specifications;
-    }
-
-    public String getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(String department) {
-        this.department = department;
     }
 
     public int getIdRam() {
@@ -99,7 +89,6 @@ public class Ram {
                 ", firm='" + firm + '\'' +
                 ", title='" + title + '\'' +
                 ", releaseYear=" + releaseYear +
-                ", depatment='" + department + '\'' +
                 ", specifications= {memory: " + specifications.getMemory() + "  clockFrequency: " + specifications.getClockFrequency() +
                 "}}";
     }
