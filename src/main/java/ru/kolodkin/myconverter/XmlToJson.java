@@ -20,8 +20,9 @@ import java.util.List;
 
 public class XmlToJson {
     public static void main(String[] args) throws ParserConfigurationException, IOException, SAXException {
-        Document document = readXml("input.xml");
 
+        //Document document = readXml("input.xml");
+        Document document = readXml(args[0]);
         List<String> allFirm = new ArrayList<>();
         List<Ram> ramList = new ArrayList<>();
         List<Rams> rams = new ArrayList<>();
@@ -29,7 +30,10 @@ public class XmlToJson {
         getRamListFromXml(document, allFirm, ramList);
         jsonModelRam(allFirm, ramList, rams);
 
-        writeJson("output.json", rams);
+//        writeJson("output.json", rams);
+        writeJson(args[1], rams);
+
+        System.out.println("good");
     }
 
     public static void jsonModelRam(List<String> allFirm, List<Ram> ramList, List<Rams> rams) {

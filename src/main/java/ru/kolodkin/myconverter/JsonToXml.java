@@ -22,8 +22,11 @@ import static java.lang.System.out;
 
 public class JsonToXml {
     public static void main(String[] args) throws IOException, XMLStreamException {
-        Root root = readJson("output.json");
-        writeXml(readJsonEl(root), "input.xml");
+//        Root root = readJson("output.json");
+//        writeXml(readJsonEl(root), "input.xml");
+        Root root = readJson(args[0]);
+        writeXml(readJsonEl(root), args[1]);
+        out.println("Good");
     }
 
     public static List<Ram> readJsonEl(Root root) {
