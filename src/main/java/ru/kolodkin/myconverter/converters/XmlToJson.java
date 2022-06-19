@@ -1,4 +1,4 @@
-package ru.kolodkin.myconverter;
+package ru.kolodkin.myconverter.converters;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.w3c.dom.Document;
@@ -19,24 +19,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class XmlToJson {
-    public static void main(String[] args) throws ParserConfigurationException, IOException, SAXException {
-
-        //Document document = readXml("input.xml");
-        Document document = readXml(args[0]);
+    public void convert(String input, String output) throws ParserConfigurationException, IOException, SAXException {
         List<String> allFirm = new ArrayList<>();
         List<Ram> ramList = new ArrayList<>();
         List<Rams> rams = new ArrayList<>();
 
-        getRamListFromXml(document, allFirm, ramList);
+        getRamListFromXml(readXml(input), allFirm, ramList);
         jsonModelRam(allFirm, ramList, rams);
 
-//        writeJson("output.json", rams);
-        writeJson(args[1], rams);
-
-        System.out.println("good");
+        writeJson(rams, output);
     }
 
-    public static void jsonModelRam(List<String> allFirm, List<Ram> ramList, List<Rams> rams) {
+    private void jsonModelRam(List<String> allFirm, List<Ram> ramList, List<Rams> rams) {
         for (int i = 0; i < allFirm.size(); i++) {
             Rams buffRams = new Rams();
             buffRams.setFirm(allFirm.get(i));
@@ -56,32 +50,27 @@ public class XmlToJson {
         }
     }
 
-    public static void writeJson(String output, List<Rams> rams) throws IOException {
+    private void writeJson(List<Rams> rams, String output) throws IOException {
         Root root = new Root(rams);
         ObjectMapper mapper = new ObjectMapper();
         String jsonString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(root);
         mapper.writerWithDefaultPrettyPrinter().writeValue(new File(output), root);
     }
 
-    public static Document readXml(String path) throws ParserConfigurationException, IOException, SAXException {
-        // Получение фабрики, чтобы после получить билдер документов.
+    private Document readXml(String path) throws ParserConfigurationException, IOException, SAXException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-
-        // Получили из фабрики билдер, который парсит XML, создает структуру Document в виде иерархического дерева.
         DocumentBuilder documentBuilder = factory.newDocumentBuilder();
-
-        // Запарсили XML, создав структуру Document. Теперь у нас есть доступ ко всем элементам, каким нам ну84884жно.
-        Document document = documentBuilder.parse(new File("input.xml"));
+        Document document = documentBuilder.parse(new File(path));
         document.getDocumentElement().normalize();
         return document;
     }
 
-    public static void getRamListFromXml(Document document, List<String> allFirm, List<Ram> ramList) {
+    private void getRamListFromXml(Document document, List<String> allFirm, List<Ram> ramList) {
         Element ramsElement = (Element) document.getElementsByTagName("rams").item(0);
         NodeList ramNodeList = document.getDocumentElement().getElementsByTagName("ram");
 
         for (int i = 0; i < ramNodeList.getLength(); i++) {
-            if (ramNodeList.item(i).getNodeType() == Node.ELEMENT_NODE) { // проверка типа
+            if (ramNodeList.item(i).getNodeType() == Node.ELEMENT_NODE) {
                 Element ramElement = (Element) ramNodeList.item(i);
 
                 Ram ram = new Ram();
@@ -91,7 +80,7 @@ public class XmlToJson {
                 NodeList childNodes = ramElement.getChildNodes();
 
                 for (int j = 0; j < childNodes.getLength(); j++) {
-                    if (childNodes.item(j).getNodeType() == Node.ELEMENT_NODE) { // проверка типа
+                    if (childNodes.item(j).getNodeType() == Node.ELEMENT_NODE) {
                         Element ramChildElement = (Element) childNodes.item(j);
 
                         switch (ramChildElement.getNodeName()) {
@@ -140,6 +129,4 @@ public class XmlToJson {
 
         allFirm = allFirm.stream().distinct().toList();
     }
-
-
 }

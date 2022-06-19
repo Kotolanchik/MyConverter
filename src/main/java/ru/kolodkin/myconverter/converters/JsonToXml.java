@@ -1,9 +1,8 @@
-package ru.kolodkin.myconverter;
+package ru.kolodkin.myconverter.converters;
 
 import com.sun.xml.txw2.output.IndentingXMLStreamWriter;
 import org.codehaus.jackson.map.ObjectMapper;
 import ru.kolodkin.myconverter.models.Ram;
-import ru.kolodkin.myconverter.models.Rams;
 import ru.kolodkin.myconverter.models.Root;
 
 import javax.xml.stream.XMLOutputFactory;
@@ -18,28 +17,24 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.lang.System.out;
-
 public class JsonToXml {
-    public static void main(String[] args) throws IOException, XMLStreamException {
-//        Root root = readJson("output.json");
-//        writeXml(readJsonEl(root), "input.xml");
-        Root root = readJson(args[0]);
-        writeXml(readJsonEl(root), args[1]);
-        out.println("Good");
+    public void convert(String input, String output) throws IOException, XMLStreamException {
+        writeXml(readJsonEl(readJson(input)), output);
     }
 
-    public static List<Ram> readJsonEl(Root root) {
+    private List<Ram> readJsonEl(Root root) {
         List<Ram> listRam = new ArrayList<>();
 
-        for (int i = 0; i < root.getRams().size(); i++) {
-            for (int j = 0; j < root.getRams().get(i).getRam().size(); j++) { // root.getRams().get(i).getRams().size() => root(list rams) конкретный rams -->  rams с оперативкой и списком ram ов берем его сайз
+        for (int firstIndex = 0; firstIndex < root.getRams().size(); firstIndex++) {
+            for (int secondIndex = 0; secondIndex < root.getRams().get(firstIndex).getRam().size(); secondIndex++) {
                 Ram ram = new Ram();
-                ram.setFirm(root.getRams().get(i/*первй счетчик*/).getFirm());
-                ram.setSpecifications(root.getRams().get(i).getRam().get(j/*второй счетчик*/).getSpecifications());
-                ram.setIdRam(root.getRams().get(i).getRam().get(j/*второй счетчик*/).getIdRam());
-                ram.setReleaseYear(root.getRams().get(i).getRam().get(j/*второй счетчик*/).getReleaseYear());
-                ram.setTitle(root.getRams().get(i).getRam().get(j/*второй счетчик*/).getTitle());
+
+                ram.setFirm(root.getRams().get(firstIndex).getFirm());
+                ram.setSpecifications(root.getRams().get(firstIndex).getRam().get(secondIndex).getSpecifications());
+                ram.setIdRam(root.getRams().get(firstIndex).getRam().get(secondIndex).getIdRam());
+                ram.setReleaseYear(root.getRams().get(firstIndex).getRam().get(secondIndex).getReleaseYear());
+                ram.setTitle(root.getRams().get(firstIndex).getRam().get(secondIndex).getTitle());
+
                 listRam.add(ram);
             }
         }
@@ -47,13 +42,13 @@ public class JsonToXml {
         return listRam.stream().sorted((Comparator.comparingInt(Ram::getIdRam))).collect(Collectors.toList());
     }
 
-    public static Root readJson(String path) throws IOException {
+    private Root readJson(String path) throws IOException {
         FileReader reader = new FileReader(path);
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readValue(reader, Root.class);
     }
 
-    public static void writeXml(List<Ram> listRam, String outputPath) throws XMLStreamException, FileNotFoundException {
+    private void writeXml(List<Ram> listRam, String outputPath) throws XMLStreamException, FileNotFoundException {
         XMLOutputFactory output = XMLOutputFactory.newInstance();
         XMLStreamWriter writer = new IndentingXMLStreamWriter(output.createXMLStreamWriter(new FileOutputStream(outputPath)));
 
@@ -70,7 +65,7 @@ public class JsonToXml {
         writer.close();
     }
 
-    public static void writeXmlEl(XMLStreamWriter writer, Ram ram) throws XMLStreamException {
+    private void writeXmlEl(XMLStreamWriter writer, Ram ram) throws XMLStreamException {
         writer.writeStartElement("ram");
         writer.writeAttribute("idRam", String.valueOf(ram.getIdRam()));
 
@@ -100,4 +95,3 @@ public class JsonToXml {
         writer.writeEndElement();
     }
 }
-
