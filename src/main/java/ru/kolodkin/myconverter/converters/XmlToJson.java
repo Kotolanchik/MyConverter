@@ -10,7 +10,6 @@ import ru.kolodkin.myconverter.models.Ram;
 import ru.kolodkin.myconverter.models.Rams;
 import ru.kolodkin.myconverter.models.Root;
 
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
@@ -20,58 +19,50 @@ import java.util.List;
 
 public class XmlToJson {
     public void convert(String input, String output) throws ParserConfigurationException, IOException, SAXException {
-        List<String> allFirm = new ArrayList<>();
-        List<Ram> ramList = new ArrayList<>();
-        List<Rams> rams = new ArrayList<>();
+        List<String> nameAllFirm = new ArrayList<>();
+        List<Ram> ramListFromXml = new ArrayList<>();
+        List<Rams> ramListForJson = new ArrayList<>();
 
-        getRamListFromXml(readXml(input), allFirm, ramList);
-        jsonModelRam(allFirm, ramList, rams);
+        getRamListFromXml(readXml(input), nameAllFirm, ramListFromXml);
+        jsonModelRam(nameAllFirm, ramListFromXml, ramListForJson);
 
-        writeJson(rams, output);
+        writeJson(ramListForJson, output);
     }
 
-    private void jsonModelRam(List<String> allFirm, List<Ram> ramList, List<Rams> rams) {
-        for (int i = 0; i < allFirm.size(); i++) {
+    private void jsonModelRam(List<String> nameAllFirm, List<Ram> ramListFromXml, List<Rams> ramListForJson) {
+        for (int indexFirm = 0; indexFirm < nameAllFirm.size(); indexFirm++) {
             Rams buffRams = new Rams();
-            buffRams.setFirm(allFirm.get(i));
-            rams.add(buffRams);
+            buffRams.setFirm(nameAllFirm.get(indexFirm));
+            ramListForJson.add(buffRams);
         }
 
-        for (int i = 0; i < rams.size(); i++) {
-            for (int j = 0; j < ramList.size(); j++) {
-                if (ramList.get(j).getFirm().equals(rams.get(i).getFirm())) {
-                    rams.get(i).getRam().add(new Ram(
-                            ramList.get(j).getIdRam(),
-                            ramList.get(j).getTitle(),
-                            ramList.get(j).getReleaseYear(),
-                            ramList.get(j).getSpecifications()));
+        for (int firstIndex = 0; firstIndex < ramListForJson.size(); firstIndex++) {
+            for (int secondIndex = 0; secondIndex < ramListFromXml.size(); secondIndex++) {
+                if (ramListFromXml.get(secondIndex).getFirm().equals(ramListForJson.get(firstIndex).getFirm())) {
+                    ramListForJson.get(firstIndex).getRam().add(new Ram(
+                            ramListFromXml.get(secondIndex).getIdRam(),
+                            ramListFromXml.get(secondIndex).getTitle(),
+                            ramListFromXml.get(secondIndex).getReleaseYear(),
+                            ramListFromXml.get(secondIndex).getSpecifications()));
                 }
             }
         }
     }
 
-    private void writeJson(List<Rams> rams, String output) throws IOException {
-        Root root = new Root(rams);
-        ObjectMapper mapper = new ObjectMapper();
-        String jsonString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(root);
-        mapper.writerWithDefaultPrettyPrinter().writeValue(new File(output), root);
+    private void writeJson(List<Rams> ramListForJson, String output) throws IOException {
+        new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(new File(output), new Root(ramListForJson));
     }
 
     private Document readXml(String path) throws ParserConfigurationException, IOException, SAXException {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder documentBuilder = factory.newDocumentBuilder();
-        Document document = documentBuilder.parse(new File(path));
-        document.getDocumentElement().normalize();
-        return document;
+        return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new File(path));
     }
 
-    private void getRamListFromXml(Document document, List<String> allFirm, List<Ram> ramList) {
-        Element ramsElement = (Element) document.getElementsByTagName("rams").item(0);
+    private void getRamListFromXml(Document document, List<String> nameAllFirm, List<Ram> ramListFromXml) {
         NodeList ramNodeList = document.getDocumentElement().getElementsByTagName("ram");
 
-        for (int i = 0; i < ramNodeList.getLength(); i++) {
-            if (ramNodeList.item(i).getNodeType() == Node.ELEMENT_NODE) {
-                Element ramElement = (Element) ramNodeList.item(i);
+        for (int indexNodeRam = 0; indexNodeRam < ramNodeList.getLength(); indexNodeRam++) {
+            if (ramNodeList.item(indexNodeRam).getNodeType() == Node.ELEMENT_NODE) {
+                Element ramElement = (Element) ramNodeList.item(indexNodeRam);
 
                 Ram ram = new Ram();
 
@@ -79,9 +70,9 @@ public class XmlToJson {
 
                 NodeList childNodes = ramElement.getChildNodes();
 
-                for (int j = 0; j < childNodes.getLength(); j++) {
-                    if (childNodes.item(j).getNodeType() == Node.ELEMENT_NODE) {
-                        Element ramChildElement = (Element) childNodes.item(j);
+                for (int countTagRam = 0; countTagRam < childNodes.getLength(); countTagRam++) {
+                    if (childNodes.item(countTagRam).getNodeType() == Node.ELEMENT_NODE) {
+                        Element ramChildElement = (Element) childNodes.item(countTagRam);
 
                         switch (ramChildElement.getNodeName()) {
                             case "title": {
@@ -91,8 +82,8 @@ public class XmlToJson {
 
                             case "firm": {
                                 ram.setFirm(ramChildElement.getTextContent());
-                                if (!allFirm.contains(ramChildElement.getTextContent()))
-                                    allFirm.add(ramChildElement.getTextContent());
+                                if (!nameAllFirm.contains(ramChildElement.getTextContent()))
+                                    nameAllFirm.add(ramChildElement.getTextContent());
                                 break;
                             }
 
@@ -103,8 +94,8 @@ public class XmlToJson {
 
                             case "specifications": {
                                 NodeList tagsNode = ramChildElement.getChildNodes();
-                                for (int k = 0; k < tagsNode.getLength(); k++) {
-                                    Node tagNode = tagsNode.item(k);
+                                for (int countInnerTag = 0; countInnerTag < tagsNode.getLength(); countInnerTag++) {
+                                    Node tagNode = tagsNode.item(countInnerTag);
                                     if (tagNode.getNodeType() != Node.TEXT_NODE) {
                                         if (tagNode.getNodeName() == "clockFrequency") {
                                             ram.getSpecifications().setClockFrequency(Integer.valueOf(tagNode.getTextContent()));
@@ -123,10 +114,10 @@ public class XmlToJson {
                         }
                     }
                 }
-                ramList.add(ram);
+                ramListFromXml.add(ram);
             }
         }
 
-        allFirm = allFirm.stream().distinct().toList();
+        nameAllFirm = nameAllFirm.stream().distinct().toList();
     }
 }

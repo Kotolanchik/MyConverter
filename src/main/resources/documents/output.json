@@ -13,7 +13,7 @@
     }, {
       "idRam" : 2,
       "firm" : null,
-      "title" : "aaa",
+      "title" : "aaad",
       "releaseYear" : 2004,
       "specifications" : {
         "clockFrequency" : 3000,
@@ -35,7 +35,7 @@
       "idRam" : 1,
       "firm" : null,
       "title" : "bbb",
-      "releaseYear" : 2005,
+      "releaseYear" : 20055,
       "specifications" : {
         "clockFrequency" : 2000,
         "memory" : 2000

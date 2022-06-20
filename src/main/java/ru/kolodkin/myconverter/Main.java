@@ -9,19 +9,19 @@ import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 
 public class Main {
-    public static void main(String[] args) throws ParserConfigurationException, IOException, SAXException, XMLStreamException {
-        if (args[0].split("\\.")[1].equals("xml")) {
-            XmlToJson xmltojson = new XmlToJson();
-            xmltojson.convert(args[0], args[1]);
+    public static void main(String[] args) throws ParserConfigurationException, IOException, SAXException {
+        String extension = args[0].split("\\.")[1];
+
+        if (extension.equals("xml")) {
+            new XmlToJson().convert(args[0], args[1]);
 
             System.out.println("complete");
-        } else if (args[0].split("\\.")[1].equals("json")){
-            JsonToXml jsonToXml = new JsonToXml();
-            jsonToXml.convert(args[0], args[1]);
+        } else if (extension.equals("json")){
+            new JsonToXml().convert(args[0], args[1]);
 
             System.out.println("complete");
         } else {
-            System.out.println("Что-то пошло не так...");
+            System.out.println("no complete...");
         }
     }
 }

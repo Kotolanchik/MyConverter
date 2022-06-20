@@ -18,22 +18,22 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class JsonToXml {
-    public void convert(String input, String output) throws IOException, XMLStreamException {
+    public void convert(String input, String output) {
         writeXml(readJsonEl(readJson(input)), output);
     }
 
     private List<Ram> readJsonEl(Root root) {
         List<Ram> listRam = new ArrayList<>();
 
-        for (int firstIndex = 0; firstIndex < root.getRams().size(); firstIndex++) {
-            for (int secondIndex = 0; secondIndex < root.getRams().get(firstIndex).getRam().size(); secondIndex++) {
+        for (int rootIndex = 0; rootIndex < root.getRams().size(); rootIndex++) {
+            for (int ramsIndex = 0; ramsIndex < root.getRams().get(rootIndex).getRam().size(); ramsIndex++) {
                 Ram ram = new Ram();
 
-                ram.setFirm(root.getRams().get(firstIndex).getFirm());
-                ram.setSpecifications(root.getRams().get(firstIndex).getRam().get(secondIndex).getSpecifications());
-                ram.setIdRam(root.getRams().get(firstIndex).getRam().get(secondIndex).getIdRam());
-                ram.setReleaseYear(root.getRams().get(firstIndex).getRam().get(secondIndex).getReleaseYear());
-                ram.setTitle(root.getRams().get(firstIndex).getRam().get(secondIndex).getTitle());
+                ram.setFirm(root.getRams().get(rootIndex).getFirm());
+                ram.setSpecifications(root.getRams().get(rootIndex).getRam().get(ramsIndex).getSpecifications());
+                ram.setIdRam(root.getRams().get(rootIndex).getRam().get(ramsIndex).getIdRam());
+                ram.setReleaseYear(root.getRams().get(rootIndex).getRam().get(ramsIndex).getReleaseYear());
+                ram.setTitle(root.getRams().get(rootIndex).getRam().get(ramsIndex).getTitle());
 
                 listRam.add(ram);
             }
@@ -42,27 +42,39 @@ public class JsonToXml {
         return listRam.stream().sorted((Comparator.comparingInt(Ram::getIdRam))).collect(Collectors.toList());
     }
 
-    private Root readJson(String path) throws IOException {
-        FileReader reader = new FileReader(path);
-        ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.readValue(reader, Root.class);
-    }
+    private Root readJson(String path) {
+        Root readRoot = new Root();
 
-    private void writeXml(List<Ram> listRam, String outputPath) throws XMLStreamException, FileNotFoundException {
-        XMLOutputFactory output = XMLOutputFactory.newInstance();
-        XMLStreamWriter writer = new IndentingXMLStreamWriter(output.createXMLStreamWriter(new FileOutputStream(outputPath)));
-
-        writer.writeStartDocument("utf-8", "1.0");
-        writer.writeStartElement("rams");
-
-        for (int i = 0; i < listRam.size(); i++) {
-            writeXmlEl(writer, listRam.get(i));
+        try (FileReader fileReader = new FileReader(path)) {
+            readRoot = new ObjectMapper().readValue(fileReader, Root.class);
+        } catch (IOException ex) {
+            System.out.println(ex);
         }
 
-        writer.writeEndElement();
-        writer.writeEndDocument();
-        writer.flush();
-        writer.close();
+        return readRoot;
+    }
+
+    private void writeXml(List<Ram> listRam, String outputPath) {
+        try {
+            XMLStreamWriter writer = new IndentingXMLStreamWriter(XMLOutputFactory.newInstance()
+                    .createXMLStreamWriter(new FileOutputStream(outputPath)));
+
+            writer.writeStartDocument("utf-8", "1.0");
+            writer.writeStartElement("rams");
+
+            for (int i = 0; i < listRam.size(); i++) {
+                writeXmlEl(writer, listRam.get(i));
+            }
+
+            writer.writeEndElement();
+            writer.writeEndDocument();
+            writer.flush();
+
+        } catch (FileNotFoundException ex) {
+            System.out.println(ex);
+        } catch (XMLStreamException ex) {
+            System.out.println(ex);
+        }
     }
 
     private void writeXmlEl(XMLStreamWriter writer, Ram ram) throws XMLStreamException {
