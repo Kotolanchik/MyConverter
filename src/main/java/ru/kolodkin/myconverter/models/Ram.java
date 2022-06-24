@@ -1,96 +1,40 @@
 package ru.kolodkin.myconverter.models;
 
-/*
-* Оперативная память.
-* */
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@RequiredArgsConstructor
 public class Ram {
+    @NonNull
     private int idRam;
     private String firm;
+    @NonNull
     private String title;
+    @NonNull
     private int releaseYear;
-    private Specifications specifications = new Specifications();
+    @NonNull
+    private Specifications specifications;
 
-    public Ram() {
-    }
-
-    public Ram(int idRam, String title, int releaseYear, Specifications specifications) {
+    public Ram(@NonNull int idRam, String firm, @NonNull String title, @NonNull int releaseYear, @NonNull Specifications specifications) {
         this.idRam = idRam;
-        this.title = title;
-        this.releaseYear = releaseYear;
-        this.specifications = specifications;
-    }
-
-    public Specifications getSpecifications() {
-        return specifications;
-    }
-
-    public int getIdRam() {
-        return idRam;
-    }
-
-    public void setIdRam(int idRam) {
-        this.idRam = idRam;
-    }
-
-    public String getFirm() {
-        return firm;
-    }
-
-    public void setFirm(String firm) {
         this.firm = firm;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
         this.title = title;
-    }
-
-    public int getReleaseYear() {
-        return releaseYear;
-    }
-
-    public void setReleaseYear(int releaseYear) {
         this.releaseYear = releaseYear;
-    }
-
-    public void setSpecifications(Specifications specifications) {
         this.specifications = specifications;
     }
 
-    /*Особенности оперативной памяти.*/
+    @Data
+    @NoArgsConstructor
+    @RequiredArgsConstructor
     public static class Specifications {
+        @NonNull
         private int clockFrequency;
+        @NonNull
         private int memory;
-
-        public Specifications() {
-        }
-
-        public int getClockFrequency() {
-            return clockFrequency;
-        }
-        public void setClockFrequency(int clockFrequency) {
-            this.clockFrequency = clockFrequency;
-        }
-        public int getMemory() {
-            return memory;
-        }
-        public void setMemory(int memory) {
-            this.memory = memory;
-        }
-    }
-
-    @Override
-    public String toString() {
-        return "Ram{" +
-                "idRam=" + idRam +
-                ", firm='" + firm + '\'' +
-                ", title='" + title + '\'' +
-                ", releaseYear=" + releaseYear +
-                ", specifications= {memory: " + specifications.getMemory() + "  clockFrequency: " + specifications.getClockFrequency() +
-                "}}";
     }
 }
 

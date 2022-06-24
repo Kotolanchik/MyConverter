@@ -2,16 +2,12 @@ package ru.kolodkin.myconverter.models;
 
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
 @RequiredArgsConstructor
-public class Rams {
+public class RootJson {
     @NonNull
-    private String firm;
-    @NonNull
-    private List<Ram> ram = new ArrayList<>();
+    private List<Rams> rams;
 }
-

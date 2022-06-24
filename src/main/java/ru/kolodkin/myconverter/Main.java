@@ -1,27 +1,41 @@
 package ru.kolodkin.myconverter;
 
-import org.xml.sax.SAXException;
-import ru.kolodkin.myconverter.converters.JsonToXml;
+import lombok.val;
 import ru.kolodkin.myconverter.converters.XmlToJson;
+import ru.kolodkin.myconverter.factory.ConverterFactory;
+import ru.kolodkin.myconverter.factory.ConverterType;
+import ru.kolodkin.myconverter.models.Ram;
+import ru.kolodkin.myconverter.models.RootXml;
+import ru.kolodkin.myconverter.tools.Extension;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.stream.XMLStreamException;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class Main {
-    public static void main(String[] args) throws ParserConfigurationException, IOException, SAXException {
-        String extension = args[0].split("\\.")[1];
+    public static void main(String[] args) {
+        if (Extension.checkExtension(args)) {
+            System.out.println("С расширениями всё в порядке.");
 
-        if (extension.equals("xml")) {
-            new XmlToJson().convert(args[0], args[1]);
+            try (val inputStream = new FileInputStream(args[1]);
+                 val outputStream = new FileOutputStream(args[2])) {
 
-            System.out.println("complete");
-        } else if (extension.equals("json")){
-            new JsonToXml().convert(args[0], args[1]);
+                new ConverterFactory().createConverter(ConverterType
+                        .valueOf(args[0])).convert(inputStream, outputStream);
 
-            System.out.println("complete");
-        } else {
-            System.out.println("no complete...");
+                System.out.println("Конвертация прошла успешно.");
+
+            } catch (FileNotFoundException exception) {
+                System.out.println("Файл не найден...");
+            } catch (IOException exception) {
+                System.out.println(exception.getMessage());
+            } catch (JAXBException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }

@@ -1,123 +1,83 @@
 package ru.kolodkin.myconverter.converters;
 
 import org.codehaus.jackson.map.ObjectMapper;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 import ru.kolodkin.myconverter.models.Ram;
 import ru.kolodkin.myconverter.models.Rams;
-import ru.kolodkin.myconverter.models.Root;
+import ru.kolodkin.myconverter.models.RootJson;
+import ru.kolodkin.myconverter.models.RootXml;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.File;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class XmlToJson {
-    public void convert(String input, String output) throws ParserConfigurationException, IOException, SAXException {
-        List<String> nameAllFirm = new ArrayList<>();
-        List<Ram> ramListFromXml = new ArrayList<>();
-        List<Rams> ramListForJson = new ArrayList<>();
+public class XmlToJson implements Converter {
+    public void convert(InputStream input, OutputStream output) throws IOException, JAXBException {
+        RootXml rootXml = readXml(input);
 
-        getRamListFromXml(readXml(input), nameAllFirm, ramListFromXml);
-        jsonModelRam(nameAllFirm, ramListFromXml, ramListForJson);
-
-        writeJson(ramListForJson, output);
+        writeJson(getJsonModel(getNameFirms(rootXml),
+                rootXml.getRamList()), output);
     }
 
-    private void jsonModelRam(List<String> nameAllFirm, List<Ram> ramListFromXml, List<Rams> ramListForJson) {
-        for (int indexFirm = 0; indexFirm < nameAllFirm.size(); indexFirm++) {
+    /**
+     * Преобразует Xml модель в JSON.
+     *
+     * @param nameAllFirm    Название всех фирм.
+     * @param ramListFromXml Модель из XML файла.
+     * @return Возвращает JSON модель.
+     */
+    private ArrayList<Rams> getJsonModel(List<String> nameAllFirm, List<Ram> ramListFromXml) {
+        ArrayList<Rams> ramListForJson = new ArrayList<>();
+        for (String firm : nameAllFirm) {
             Rams buffRams = new Rams();
-            buffRams.setFirm(nameAllFirm.get(indexFirm));
+            buffRams.setFirm(firm);
             ramListForJson.add(buffRams);
         }
 
-        for (int firstIndex = 0; firstIndex < ramListForJson.size(); firstIndex++) {
-            for (int secondIndex = 0; secondIndex < ramListFromXml.size(); secondIndex++) {
-                if (ramListFromXml.get(secondIndex).getFirm().equals(ramListForJson.get(firstIndex).getFirm())) {
-                    ramListForJson.get(firstIndex).getRam().add(new Ram(
-                            ramListFromXml.get(secondIndex).getIdRam(),
-                            ramListFromXml.get(secondIndex).getTitle(),
-                            ramListFromXml.get(secondIndex).getReleaseYear(),
-                            ramListFromXml.get(secondIndex).getSpecifications()));
+        for (Rams rams : ramListForJson) {
+            for (Ram ram : ramListFromXml) {
+                if (ram.getFirm().equals(rams.getFirm())) {
+                    rams.getRam().add(
+                            new Ram(ram.getIdRam(),
+                                    ram.getTitle(),
+                                    ram.getReleaseYear(),
+                                    ram.getSpecifications()));
                 }
             }
         }
+        return ramListForJson;
     }
 
-    private void writeJson(List<Rams> ramListForJson, String output) throws IOException {
-        new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(new File(output), new Root(ramListForJson));
+    private void writeJson(List<Rams> ramListForJson, OutputStream outputStream) throws IOException {
+        new ObjectMapper().writerWithDefaultPrettyPrinter()
+                .writeValue(outputStream, new RootJson(ramListForJson));
     }
 
-    private Document readXml(String path) throws ParserConfigurationException, IOException, SAXException {
-        return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new File(path));
+    private RootXml readXml(InputStream inputStream) throws JAXBException {
+        JAXBContext jaxbContext = JAXBContext.newInstance(RootXml.class);
+        jaxbContext.createMarshaller().setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        return (RootXml) jaxbContext.createUnmarshaller().unmarshal(inputStream);
     }
 
-    private void getRamListFromXml(Document document, List<String> nameAllFirm, List<Ram> ramListFromXml) {
-        NodeList ramNodeList = document.getDocumentElement().getElementsByTagName("ram");
-
-        for (int indexNodeRam = 0; indexNodeRam < ramNodeList.getLength(); indexNodeRam++) {
-            if (ramNodeList.item(indexNodeRam).getNodeType() == Node.ELEMENT_NODE) {
-                Element ramElement = (Element) ramNodeList.item(indexNodeRam);
-
-                Ram ram = new Ram();
-
-                ram.setIdRam(Integer.valueOf(ramElement.getAttributes().getNamedItem("idRam").getNodeValue()));
-
-                NodeList childNodes = ramElement.getChildNodes();
-
-                for (int countTagRam = 0; countTagRam < childNodes.getLength(); countTagRam++) {
-                    if (childNodes.item(countTagRam).getNodeType() == Node.ELEMENT_NODE) {
-                        Element ramChildElement = (Element) childNodes.item(countTagRam);
-
-                        switch (ramChildElement.getNodeName()) {
-                            case "title": {
-                                ram.setTitle(ramChildElement.getTextContent());
-                                break;
-                            }
-
-                            case "firm": {
-                                ram.setFirm(ramChildElement.getTextContent());
-                                if (!nameAllFirm.contains(ramChildElement.getTextContent()))
-                                    nameAllFirm.add(ramChildElement.getTextContent());
-                                break;
-                            }
-
-                            case "releaseYear": {
-                                ram.setReleaseYear(Integer.valueOf(ramChildElement.getTextContent()));
-                                break;
-                            }
-
-                            case "specifications": {
-                                NodeList tagsNode = ramChildElement.getChildNodes();
-                                for (int countInnerTag = 0; countInnerTag < tagsNode.getLength(); countInnerTag++) {
-                                    Node tagNode = tagsNode.item(countInnerTag);
-                                    if (tagNode.getNodeType() != Node.TEXT_NODE) {
-                                        if (tagNode.getNodeName() == "clockFrequency") {
-                                            ram.getSpecifications().setClockFrequency(Integer.valueOf(tagNode.getTextContent()));
-                                        }
-
-                                        ram.getSpecifications().setMemory(Integer.valueOf(tagNode.getTextContent()));
-                                    }
-                                }
-                                break;
-                            }
-
-                            case "clockFrequency": {
-                                ram.getSpecifications().setClockFrequency(Integer.valueOf(ramChildElement.getTextContent()));
-                                break;
-                            }
-                        }
-                    }
-                }
-                ramListFromXml.add(ram);
-            }
+    /**
+     * @param rootXml Xml модель.
+     * @return Возвращает уникальные названия всех фирм из модели.
+     */
+    private ArrayList<String> getNameFirms(RootXml rootXml) {
+        if (rootXml == null) {
+            throw new NullPointerException("XML файл пустой.");
         }
 
-        nameAllFirm = nameAllFirm.stream().distinct().toList();
+        return (ArrayList<String>) rootXml.getRamList().stream().collect(
+                        () -> new ArrayList<String>(),
+                        (list, item) -> list.add(item.getFirm()),
+                        ArrayList::addAll)
+                .stream().distinct()
+                .collect(Collectors.toList());
     }
 }
