@@ -24,15 +24,15 @@ public class Main {
 
                 System.out.println("Конвертация прошла успешно.");
             } catch (FileNotFoundException exception) {
-                System.out.println("Файл не найден...");
+                System.out.println("Файл не найден... " + exception.getMessage());
             } catch (IOException exception) {
-                System.out.println(exception.getMessage());
+                System.out.println("Проблема с доступом к данным... " + exception.getMessage());
             } catch (IllegalArgumentException exception) {
-                System.out.println("Неправильный ввод входных данных");
-            } catch (JAXBException e) {
-                System.out.println("Ошибка при парсинге");
-            } catch (Exception e) {
-                System.out.println("Непредвиденная ошибка " + e);
+                System.out.println("Неправильный ввод входных данных... " + exception.getMessage());
+            } catch (JAXBException exception) {
+                System.out.println("Ошибка при парсинге... " + exception.getMessage());
+            } catch (Exception exception) {
+                System.out.println("Непредвиденная ошибка... "  + exception.getMessage());
             }
         }
     }
