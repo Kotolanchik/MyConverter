@@ -11,16 +11,6 @@
         <title>bbb</title>
     </ram>
     <ram>
-        <firm>Apple</firm>
-        <idRam>2</idRam>
-        <releaseYear>2004</releaseYear>
-        <specifications>
-            <clockFrequency>3000</clockFrequency>
-            <memory>3000</memory>
-        </specifications>
-        <title>aaad</title>
-    </ram>
-    <ram>
         <firm>DNS</firm>
         <idRam>3</idRam>
         <releaseYear>2005</releaseYear>
@@ -49,5 +39,15 @@
             <memory>1000</memory>
         </specifications>
         <title>ccc</title>
+    </ram>
+    <ram>
+        <firm>ammm</firm>
+        <idRam>7</idRam>
+        <releaseYear>3421</releaseYear>
+        <specifications>
+            <clockFrequency>52</clockFrequency>
+            <memory>12314</memory>
+        </specifications>
+        <title>f</title>
     </ram>
 </rams>

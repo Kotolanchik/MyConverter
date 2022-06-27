@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rams>
+    <ram>
+        <firm>DNS</firm>
+        <idRam>1</idRam>
+        <releaseYear>20055</releaseYear>
+        <specifications>
+            <clockFrequency>2000</clockFrequency>
+            <memory>2000</memory>
+        </specifications>
+        <title>bbb</title>
+    </ram>
+</rams>

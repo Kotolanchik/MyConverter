@@ -1,11 +1,9 @@
-package ru.kolodkin.myconverter.models;
+package ru.kolodkin.myconverter.model;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 @Data
+@Builder
 @NoArgsConstructor
 @RequiredArgsConstructor
 public class Ram {

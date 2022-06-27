@@ -1,14 +1,13 @@
-package ru.kolodkin.myconverter.converters;
+package ru.kolodkin.myconverter.converter;
 
-import org.codehaus.jackson.map.ObjectMapper;
-import ru.kolodkin.myconverter.models.Ram;
-import ru.kolodkin.myconverter.models.Rams;
-import ru.kolodkin.myconverter.models.RootJson;
-import ru.kolodkin.myconverter.models.RootXml;
+import ru.kolodkin.myconverter.model.Ram;
+import ru.kolodkin.myconverter.model.Rams;
+import ru.kolodkin.myconverter.model.RootJson;
+import ru.kolodkin.myconverter.model.RootXml;
+import ru.kolodkin.myconverter.tool.ObjectMapperInstance;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -20,33 +19,24 @@ public class XmlToJson implements Converter {
     public void convert(InputStream input, OutputStream output) throws IOException, JAXBException {
         RootXml rootXml = readXml(input);
 
-        writeJson(getJsonModel(getNameFirms(rootXml),
-                rootXml.getRamList()), output);
+        writeJson(getJsonModel(getNameFirms(rootXml), rootXml.getRamList()), output);
     }
 
-    /**
-     * Преобразует Xml модель в JSON.
-     *
-     * @param nameAllFirm    Название всех фирм.
-     * @param ramListFromXml Модель из XML файла.
-     * @return Возвращает JSON модель.
-     */
     private ArrayList<Rams> getJsonModel(List<String> nameAllFirm, List<Ram> ramListFromXml) {
         ArrayList<Rams> ramListForJson = new ArrayList<>();
         for (String firm : nameAllFirm) {
-            Rams buffRams = new Rams();
-            buffRams.setFirm(firm);
-            ramListForJson.add(buffRams);
+            ramListForJson.add(new Rams(firm));
         }
 
         for (Rams rams : ramListForJson) {
             for (Ram ram : ramListFromXml) {
                 if (ram.getFirm().equals(rams.getFirm())) {
-                    rams.getRam().add(
-                            new Ram(ram.getIdRam(),
-                                    ram.getTitle(),
-                                    ram.getReleaseYear(),
-                                    ram.getSpecifications()));
+                    rams.getRam().add(Ram.builder()
+                            .idRam(ram.getIdRam())
+                            .title(ram.getTitle())
+                            .releaseYear(ram.getReleaseYear())
+                            .specifications(ram.getSpecifications())
+                            .build());
                 }
             }
         }
@@ -54,26 +44,27 @@ public class XmlToJson implements Converter {
     }
 
     private void writeJson(List<Rams> ramListForJson, OutputStream outputStream) throws IOException {
-        new ObjectMapper().writerWithDefaultPrettyPrinter()
+        ObjectMapperInstance.getInstance()
+                .writerWithDefaultPrettyPrinter()
                 .writeValue(outputStream, new RootJson(ramListForJson));
     }
 
     private RootXml readXml(InputStream inputStream) throws JAXBException {
-        JAXBContext jaxbContext = JAXBContext.newInstance(RootXml.class);
-        jaxbContext.createMarshaller().setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        return (RootXml) jaxbContext.createUnmarshaller().unmarshal(inputStream);
+        return (RootXml) JAXBContext.newInstance(RootXml.class)
+                .createUnmarshaller()
+                .unmarshal(inputStream);
     }
 
     /**
      * @param rootXml Xml модель.
      * @return Возвращает уникальные названия всех фирм из модели.
      */
-    private ArrayList<String> getNameFirms(RootXml rootXml) {
+    private List<String> getNameFirms(RootXml rootXml) {
         if (rootXml == null) {
             throw new NullPointerException("XML файл пустой.");
         }
 
-        return (ArrayList<String>) rootXml.getRamList().stream().collect(
+        return rootXml.getRamList().stream().collect(
                         () -> new ArrayList<String>(),
                         (list, item) -> list.add(item.getFirm()),
                         ArrayList::addAll)

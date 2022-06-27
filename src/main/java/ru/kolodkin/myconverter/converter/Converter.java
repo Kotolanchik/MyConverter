@@ -1,4 +1,4 @@
-package ru.kolodkin.myconverter.converters;
+package ru.kolodkin.myconverter.converter;
 
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
