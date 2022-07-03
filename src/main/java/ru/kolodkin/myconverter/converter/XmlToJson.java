@@ -13,12 +13,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public final class XmlToJson implements Converter {
-    public void convert(InputStream input, OutputStream output) throws IOException, JAXBException {
+    public void convert(InputStream input, OutputStream output) {
         final val rootXml = readXml(input);
 
         writeJson(getJsonModel(getNameFirms(rootXml), rootXml.getRamList()), output);
@@ -45,16 +46,25 @@ public final class XmlToJson implements Converter {
         return ramListForJson;
     }
 
-    private void writeJson(List<Rams> ramListForJson, OutputStream outputStream) throws IOException {
-        ObjectMapperInstance.getInstance()
-                .writerWithDefaultPrettyPrinter()
-                .writeValue(outputStream, new RootJson(ramListForJson));
+    private void writeJson(List<Rams> ramListForJson, OutputStream outputStream)  {
+        try {
+            ObjectMapperInstance.getInstance()
+                    .writerWithDefaultPrettyPrinter()
+                    .writeValue(outputStream, new RootJson(ramListForJson));
+        } catch (IOException exception) {
+            throw new RuntimeException("Ошибка при вводе/выводе... \n" + Arrays.toString(exception.getStackTrace()));
+        }
     }
 
-    private RootXml readXml(InputStream inputStream) throws JAXBException {
-        return (RootXml) JAXBContext.newInstance(RootXml.class)
-                .createUnmarshaller()
-                .unmarshal(inputStream);
+    private RootXml readXml(InputStream inputStream)  {
+        try {
+            return (RootXml) JAXBContext.newInstance(RootXml.class)
+                    .createUnmarshaller()
+                    .unmarshal(inputStream);
+        } catch (JAXBException exception) {
+            throw new RuntimeException("Ошибка при преобразование xml файла в объект... \n"
+                    + Arrays.toString(exception.getStackTrace()));
+        }
     }
 
     /**

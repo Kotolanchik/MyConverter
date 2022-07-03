@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import ru.kolodkin.myconverter.converter.XmlToJson;
 
-import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -23,14 +22,12 @@ class XmlToJsonTest {
 
     @Test
     void xmlToJsonNullTest() {
-        try (val fileInputStream = new FileInputStream("src/test/resources/inputFile/xml/inputNull.xml");
-             val fileOutputStream = new FileOutputStream("src/test/resources/outputFile/json/outputNull.json")) {
+        try (val fileInputStream = new FileInputStream("src/test/document/inputFile/xml/inputNull.xml");
+             val fileOutputStream = new FileOutputStream("src/test/document/outputFile/json/outputNull.json")) {
             xmlToJson.convert(fileInputStream, fileOutputStream);
 
-            JSONAssert.assertEquals(FileUtils.readFileToString(new File("src/test/resources/expectedFile/json/inputNull.json")),
-                    FileUtils.readFileToString(new File("src/test/resources/outputFile/json/outputNull.json")), true);
-        } catch (JAXBException e) {
-            throw new RuntimeException("Ошибка при парсинге... " + Arrays.toString(e.getStackTrace()));
+            JSONAssert.assertEquals(FileUtils.readFileToString(new File("src/test/document/expectedFile/json/inputNull.json")),
+                    FileUtils.readFileToString(new File("src/test/document/outputFile/json/outputNull.json")), true);
         } catch (JSONException e) {
             throw new RuntimeException("Ошибка при сравнение json файлов... " + Arrays.toString(e.getStackTrace()));
         } catch (IOException e) {
@@ -40,14 +37,12 @@ class XmlToJsonTest {
 
     @Test
     void xmlToJsonStandardTest() {
-        try (val fileInputStream = new FileInputStream("src/test/resources/inputFile/xml/input.xml");
-             val fileOutputStream = new FileOutputStream("src/test/resources/outputFile/json/output.json")) {
+        try (val fileInputStream = new FileInputStream("src/test/document/inputFile/xml/input.xml");
+             val fileOutputStream = new FileOutputStream("src/test/document/outputFile/json/output.json")) {
             xmlToJson.convert(fileInputStream, fileOutputStream);
 
-            JSONAssert.assertEquals(FileUtils.readFileToString(new File("src/test/resources/expectedFile/json/input.json")),
-                    FileUtils.readFileToString(new File("src/test/resources/outputFile/json/output.json")), true);
-        } catch (JAXBException e) {
-            throw new RuntimeException("Ошибка при парсинге... " + Arrays.toString(e.getStackTrace()));
+            JSONAssert.assertEquals(FileUtils.readFileToString(new File("src/test/document/expectedFile/json/input.json")),
+                    FileUtils.readFileToString(new File("src/test/document/outputFile/json/output.json")), true);
         } catch (JSONException e) {
             throw new RuntimeException("Ошибка при сравнение json файлов... " + Arrays.toString(e.getStackTrace()));
         } catch (IOException e) {
