@@ -5,7 +5,8 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
+@Setter
+@Getter
 @NoArgsConstructor
 @RequiredArgsConstructor
 public class Rams {

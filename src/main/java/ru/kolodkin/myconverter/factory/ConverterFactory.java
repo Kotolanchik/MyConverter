@@ -4,11 +4,11 @@ import ru.kolodkin.myconverter.converter.Converter;
 import ru.kolodkin.myconverter.converter.JsonToXml;
 import ru.kolodkin.myconverter.converter.XmlToJson;
 
-
-public class ConverterFactory {
+public final class ConverterFactory {
     public Converter createConverter(ConverterType type) {
-        return type == ConverterType.JSON2XML ? new JsonToXml()
-                : type == ConverterType.XML2JSON ? new XmlToJson()
-                : null;
+        if (type == ConverterType.JSON2XML) {
+            return new JsonToXml();
+        }
+        return new XmlToJson();
     }
 }

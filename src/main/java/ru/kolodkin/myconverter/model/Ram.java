@@ -2,7 +2,8 @@ package ru.kolodkin.myconverter.model;
 
 import lombok.*;
 
-@Data
+@Setter
+@Getter
 @Builder
 @NoArgsConstructor
 @RequiredArgsConstructor
@@ -25,7 +26,8 @@ public class Ram {
         this.specifications = specifications;
     }
 
-    @Data
+    @Setter
+    @Getter
     @NoArgsConstructor
     @RequiredArgsConstructor
     public static class Specifications {

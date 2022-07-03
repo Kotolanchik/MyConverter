@@ -1,5 +1,6 @@
 package ru.kolodkin.myconverter.converter;
 
+import lombok.val;
 import ru.kolodkin.myconverter.model.Ram;
 import ru.kolodkin.myconverter.model.Rams;
 import ru.kolodkin.myconverter.model.RootJson;
@@ -13,23 +14,24 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-public class XmlToJson implements Converter {
+public final class XmlToJson implements Converter {
     public void convert(InputStream input, OutputStream output) throws IOException, JAXBException {
-        RootXml rootXml = readXml(input);
+        final val rootXml = readXml(input);
 
         writeJson(getJsonModel(getNameFirms(rootXml), rootXml.getRamList()), output);
     }
 
-    private ArrayList<Rams> getJsonModel(List<String> nameAllFirm, List<Ram> ramListFromXml) {
-        ArrayList<Rams> ramListForJson = new ArrayList<>();
-        for (String firm : nameAllFirm) {
+    private ArrayList<Rams> getJsonModel(Set<String> nameAllFirm, List<Ram> ramListFromXml) {
+        val ramListForJson = new ArrayList<Rams>();
+        for (val firm : nameAllFirm) {
             ramListForJson.add(new Rams(firm));
         }
 
-        for (Rams rams : ramListForJson) {
-            for (Ram ram : ramListFromXml) {
+        for (val rams : ramListForJson) {
+            for (val ram : ramListFromXml) {
                 if (ram.getFirm().equals(rams.getFirm())) {
                     rams.getRam().add(Ram.builder()
                             .idRam(ram.getIdRam())
@@ -59,16 +61,13 @@ public class XmlToJson implements Converter {
      * @param rootXml Xml модель.
      * @return Возвращает уникальные названия всех фирм из модели.
      */
-    private List<String> getNameFirms(RootXml rootXml) {
+    private Set<String> getNameFirms(RootXml rootXml) {
         if (rootXml == null) {
             throw new NullPointerException("XML файл пустой.");
         }
-
-        return rootXml.getRamList().stream().collect(
-                        () -> new ArrayList<String>(),
-                        (list, item) -> list.add(item.getFirm()),
-                        ArrayList::addAll)
-                .stream().distinct()
-                .collect(Collectors.toList());
+        return rootXml.getRamList()
+                .stream()
+                .map(Ram::getFirm)
+                .collect(Collectors.toSet());
     }
 }

@@ -2,7 +2,7 @@
 <rams>
     <ram>
         <firm>DNS</firm>
-        <idRam>1</idRam>
+        <idRam>1 </idRam>
         <releaseYear>20055</releaseYear>
         <specifications>
             <clockFrequency>2000</clockFrequency>

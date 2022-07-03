@@ -1,64 +1,57 @@
+import lombok.val;
+import org.apache.commons.io.FileUtils;
+import org.json.JSONException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
 import ru.kolodkin.myconverter.converter.XmlToJson;
 
 import javax.xml.bind.JAXBException;
+import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.util.Arrays;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-public class XmlToJsonTest {
+class XmlToJsonTest {
     static XmlToJson xmlToJson;
 
     @BeforeAll
-    public static void initialization() {
+    static void initialization() {
         xmlToJson = new XmlToJson();
     }
 
     @Test
-    public void xmlToJsonNullTest() {
-        final String inputFile = "src/test/resources/inputFile/xml/inputNull.xml";
-        final String outputFile = "src/test/resources/outputFile/json/outputNull.json";
-        final String expectedFile = "src/test/resources/expectedFile/json/inputNull.json";
-
-
-        try (FileInputStream fileInputStream = new FileInputStream(inputFile);
-             FileOutputStream fileOutputStream = new FileOutputStream(outputFile)) {
+    void xmlToJsonNullTest() {
+        try (val fileInputStream = new FileInputStream("src/test/resources/inputFile/xml/inputNull.xml");
+             val fileOutputStream = new FileOutputStream("src/test/resources/outputFile/json/outputNull.json")) {
             xmlToJson.convert(fileInputStream, fileOutputStream);
 
-            assertEquals(Files.readString(Path.of(expectedFile)), Files.readString(Path.of(outputFile)));
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            JSONAssert.assertEquals(FileUtils.readFileToString(new File("src/test/resources/expectedFile/json/inputNull.json")),
+                    FileUtils.readFileToString(new File("src/test/resources/outputFile/json/outputNull.json")), true);
         } catch (JAXBException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Ошибка при парсинге... " + Arrays.toString(e.getStackTrace()));
+        } catch (JSONException e) {
+            throw new RuntimeException("Ошибка при сравнение json файлов... " + Arrays.toString(e.getStackTrace()));
+        } catch (IOException e) {
+            throw new RuntimeException("Ошибка при вводе/выводе... " + Arrays.toString(e.getStackTrace()));
         }
     }
 
     @Test
-    public void xmlToJsonStandardTest() {
-        final String inputFile = "src/test/resources/inputFile/xml/input.xml";
-        final String outputFile = "src/test/resources/outputFile/json/output.json";
-        final String expectedFile = "src/test/resources/expectedFile/json/input.json";
-
-
-        try (FileInputStream fileInputStream = new FileInputStream(inputFile);
-             FileOutputStream fileOutputStream = new FileOutputStream(outputFile)) {
+    void xmlToJsonStandardTest() {
+        try (val fileInputStream = new FileInputStream("src/test/resources/inputFile/xml/input.xml");
+             val fileOutputStream = new FileOutputStream("src/test/resources/outputFile/json/output.json")) {
             xmlToJson.convert(fileInputStream, fileOutputStream);
 
-            assertEquals(Files.readString(Path.of(expectedFile)), Files.readString(Path.of(outputFile)));
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+            JSONAssert.assertEquals(FileUtils.readFileToString(new File("src/test/resources/expectedFile/json/input.json")),
+                    FileUtils.readFileToString(new File("src/test/resources/outputFile/json/output.json")), true);
+        } catch (JAXBException e) {
+            throw new RuntimeException("Ошибка при парсинге... " + Arrays.toString(e.getStackTrace()));
+        } catch (JSONException e) {
+            throw new RuntimeException("Ошибка при сравнение json файлов... " + Arrays.toString(e.getStackTrace()));
         } catch (IOException e) {
-            throw new RuntimeException(e);
-        }catch (JAXBException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Ошибка при вводе/выводе... " + Arrays.toString(e.getStackTrace()));
         }
     }
 }

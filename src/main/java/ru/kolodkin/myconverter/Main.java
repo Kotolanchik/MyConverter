@@ -1,38 +1,39 @@
 package ru.kolodkin.myconverter;
 
 import lombok.val;
+import org.apache.commons.io.FilenameUtils;
 import ru.kolodkin.myconverter.factory.ConverterFactory;
 import ru.kolodkin.myconverter.factory.ConverterType;
-import ru.kolodkin.myconverter.tool.Extension;
 
 import javax.xml.bind.JAXBException;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class Main {
     public static void main(String[] args) {
-        if (Extension.checkExtension(args)) {
-            System.out.println("С расширениями всё в порядке.");
-
+        if (FilenameUtils.getExtension(args[1]).equals("xml") && FilenameUtils.getExtension(args[2]).equals("json")
+                || FilenameUtils.getExtension(args[1]).equals("json") && FilenameUtils.getExtension(args[2]).equals("xml")) {
+            System.out.println("РЎ СЂР°СЃС€РёСЂРµРЅРёСЏРјРё РІСЃС‘ РІ РїРѕСЂСЏРґРєРµ.");
             try (val inputStream = new FileInputStream(args[1]);
                  val outputStream = new FileOutputStream(args[2])) {
 
                 new ConverterFactory().createConverter(ConverterType
                         .valueOf(args[0])).convert(inputStream, outputStream);
 
-                System.out.println("Конвертация прошла успешно.");
+                System.out.println("РљРѕРЅРІРµСЂС‚Р°С†РёСЏ РїСЂРѕС€Р»Р° СѓСЃРїРµС€РЅРѕ.");
             } catch (FileNotFoundException exception) {
-                System.out.println("Файл не найден... " + exception.getMessage());
+                System.err.println("Р¤Р°Р№Р» РЅРµ РЅР°Р№РґРµРЅ... \n" + Arrays.toString(exception.getStackTrace()));
             } catch (IOException exception) {
-                System.out.println("Проблема с доступом к данным... " + exception.getMessage());
+                System.err.println("РџСЂРѕР±Р»РµРјР° СЃ РґРѕСЃС‚СѓРїРѕРј Рє РґР°РЅРЅС‹Рј... \n" + Arrays.toString(exception.getStackTrace()));
             } catch (IllegalArgumentException exception) {
-                System.out.println("Неправильный ввод входных данных... " + exception.getMessage());
+                System.err.println("РќРµРїСЂР°РІРёР»СЊРЅС‹Р№ РІРІРѕРґ РІС…РѕРґРЅС‹С… РґР°РЅРЅС‹С…... \n" + Arrays.toString(exception.getStackTrace()));
             } catch (JAXBException exception) {
-                System.out.println("Ошибка при парсинге... " + exception.getMessage());
+                System.err.println("РћС€РёР±РєР° РїСЂРё РїР°СЂСЃРёРЅРіРµ... \n" + Arrays.toString(exception.getStackTrace()));
             } catch (Exception exception) {
-                System.out.println("Непредвиденная ошибка... "  + exception.getMessage());
+                System.err.println("РќРµРїСЂРµРґРІРёРґРµРЅРЅР°СЏ РѕС€РёР±РєР°... \n" + Arrays.toString(exception.getStackTrace()));
             }
         }
     }
