@@ -18,19 +18,19 @@ import java.util.stream.Collectors;
 
 public final class XmlToJson implements Converter {
     public void convert(FileInputStream input, FileOutputStream output) {
-        final val rootXml = readXml(input);
+        val rootXml = readXml(input);
 
         writeJson(getJsonModel(getNameFirms(rootXml), rootXml.getRamList()), output);
     }
 
     private ArrayList<Rams> getJsonModel(Set<String> nameAllFirm, List<Ram> ramListFromXml) {
         val ramListForJson = new ArrayList<Rams>();
-        for (val firm : nameAllFirm) {
+        for (var firm : nameAllFirm) {
             ramListForJson.add(new Rams(firm));
         }
 
-        for (val rams : ramListForJson) {
-            for (val ram : ramListFromXml) {
+        for (var rams : ramListForJson) {
+            for (var ram : ramListFromXml) {
                 if (ram.getFirm().equals(rams.getFirm())) {
                     rams.getRam().add(Ram.builder()
                             .idRam(ram.getIdRam())

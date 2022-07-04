@@ -23,8 +23,8 @@ public final class JsonToXml implements Converter {
     private RootXml getXmlModel(RootJson rootJson) {
         val listRam = new ArrayList<Ram>();
 
-        for (int rootIndex = 0; rootIndex < rootJson.getRams().size(); rootIndex++) {
-            for (int ramsIndex = 0; ramsIndex < rootJson.getRams().get(rootIndex).getRam().size(); ramsIndex++) {
+        for (var rootIndex = 0; rootIndex < rootJson.getRams().size(); rootIndex++) {
+            for (var ramsIndex = 0; ramsIndex < rootJson.getRams().get(rootIndex).getRam().size(); ramsIndex++) {
                 listRam.add(Ram.builder()
                         .firm(rootJson.getRams().get(rootIndex).getFirm())
                         .specifications(rootJson.getRams().get(rootIndex).getRam().get(ramsIndex).getSpecifications())
@@ -51,7 +51,7 @@ public final class JsonToXml implements Converter {
 
     private void writeXml(RootXml root, FileOutputStream outputStream) {
         try {
-            Marshaller jaxbMarshaller = JAXBContext.newInstance(RootXml.class).createMarshaller();
+            val jaxbMarshaller = JAXBContext.newInstance(RootXml.class).createMarshaller();
             jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             jaxbMarshaller.marshal(root, outputStream);
         } catch (JAXBException exception) {
