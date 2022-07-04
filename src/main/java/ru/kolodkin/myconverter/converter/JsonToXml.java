@@ -45,7 +45,7 @@ public final class JsonToXml implements Converter {
             return ObjectMapperInstance.getInstance()
                     .readValue(inputStream, RootJson.class);
         } catch (IOException exception) {
-            throw new RuntimeException("Ошибка при вводе/выводе... \n" + Arrays.toString(exception.getStackTrace()));
+            throw new RuntimeException("Ошибка при чтении json файла... \n" + Arrays.toString(exception.getStackTrace()));
         }
     }
 

@@ -50,7 +50,7 @@ public final class XmlToJson implements Converter {
                     .writerWithDefaultPrettyPrinter()
                     .writeValue(outputStream, new RootJson(ramListForJson));
         } catch (IOException exception) {
-            throw new RuntimeException("Ошибка при вводе/выводе... \n" + Arrays.toString(exception.getStackTrace()));
+            throw new RuntimeException("Ошибка при записи json файла... \n" + Arrays.toString(exception.getStackTrace()));
         }
     }
 
