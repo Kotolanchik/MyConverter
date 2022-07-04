@@ -23,8 +23,8 @@ public final class JsonToXml implements Converter {
     private RootXml getXmlModel(RootJson rootJson) {
         val listRam = new ArrayList<Ram>();
 
-        for (var rootIndex = 0; rootIndex < rootJson.getRams().size(); rootIndex++) {
-            for (var ramsIndex = 0; ramsIndex < rootJson.getRams().get(rootIndex).getRam().size(); ramsIndex++) {
+        for (int rootIndex = 0; rootIndex < rootJson.getRams().size(); rootIndex++) {
+            for (int ramsIndex = 0; ramsIndex < rootJson.getRams().get(rootIndex).getRam().size(); ramsIndex++) {
                 listRam.add(Ram.builder()
                         .firm(rootJson.getRams().get(rootIndex).getFirm())
                         .specifications(rootJson.getRams().get(rootIndex).getRam().get(ramsIndex).getSpecifications())
