@@ -9,9 +9,7 @@ import ru.kolodkin.myconverter.tool.ObjectMapperInstance;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -19,7 +17,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public final class XmlToJson implements Converter {
-    public void convert(InputStream input, OutputStream output) {
+    public void convert(FileInputStream input, FileOutputStream output) {
         final val rootXml = readXml(input);
 
         writeJson(getJsonModel(getNameFirms(rootXml), rootXml.getRamList()), output);
@@ -46,7 +44,7 @@ public final class XmlToJson implements Converter {
         return ramListForJson;
     }
 
-    private void writeJson(List<Rams> ramListForJson, OutputStream outputStream)  {
+    private void writeJson(List<Rams> ramListForJson, FileOutputStream outputStream) {
         try {
             ObjectMapperInstance.getInstance()
                     .writerWithDefaultPrettyPrinter()
@@ -56,7 +54,7 @@ public final class XmlToJson implements Converter {
         }
     }
 
-    private RootXml readXml(InputStream inputStream)  {
+    private RootXml readXml(FileInputStream inputStream) {
         try {
             return (RootXml) JAXBContext.newInstance(RootXml.class)
                     .createUnmarshaller()

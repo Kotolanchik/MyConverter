@@ -9,16 +9,14 @@ import ru.kolodkin.myconverter.tool.ObjectMapperInstance;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 
 public final class JsonToXml implements Converter {
-    public void convert(InputStream inputStream, OutputStream outputStream) {
+    public void convert(FileInputStream inputStream, FileOutputStream outputStream) {
         writeXml(getXmlModel(readJson(inputStream)), outputStream);
     }
 
@@ -42,7 +40,7 @@ public final class JsonToXml implements Converter {
                 .collect(Collectors.toList()));
     }
 
-    private RootJson readJson(InputStream inputStream) {
+    private RootJson readJson(FileInputStream inputStream) {
         try {
             return ObjectMapperInstance.getInstance()
                     .readValue(inputStream, RootJson.class);
@@ -51,7 +49,7 @@ public final class JsonToXml implements Converter {
         }
     }
 
-    private void writeXml(RootXml root, OutputStream outputStream) {
+    private void writeXml(RootXml root, FileOutputStream outputStream) {
         try {
             Marshaller jaxbMarshaller = JAXBContext.newInstance(RootXml.class).createMarshaller();
             jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);

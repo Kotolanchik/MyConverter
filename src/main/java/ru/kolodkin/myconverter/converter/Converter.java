@@ -1,10 +1,8 @@
 package ru.kolodkin.myconverter.converter;
 
 import javax.xml.bind.JAXBException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 
 public interface Converter {
-    void convert(InputStream input, OutputStream output) throws IOException, JAXBException;
+    void convert(FileInputStream input, FileOutputStream output) throws IOException, JAXBException;
 }
