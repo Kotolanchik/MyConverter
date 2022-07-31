@@ -5,7 +5,7 @@ import ru.kolodkin.myconverter.converter.JsonToXml;
 import ru.kolodkin.myconverter.converter.XmlToJson;
 
 public final class ConverterFactory {
-    public Converter createConverter(ConverterType type) {
+    public static Converter createConverter(ConverterType type) {
         if (type == ConverterType.JSON2XML) {
             return new JsonToXml();
         }

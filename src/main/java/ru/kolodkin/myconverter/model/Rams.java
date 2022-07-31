@@ -14,11 +14,6 @@ public class Rams {
     private String firm;
     @NonNull
     private List<Ram> ram = new ArrayList<>();
-
-    public Rams(@NonNull String firm, @NonNull List<Ram> ram) {
-        this.firm = firm;
-        this.ram = ram;
-    }
 }
 
 

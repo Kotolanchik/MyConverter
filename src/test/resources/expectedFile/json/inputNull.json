@@ -1,10 +1,10 @@
-{
+    {
   "rams" : [ {
     "firm" : "",
     "ram" : [ {
       "idRam" : 0,
-      "firm" : null,
-      "title" : "",
+
+          "title" : "","firm" : null,
       "releaseYear" : 0,
       "specifications" : {
         "clockFrequency" : 0,

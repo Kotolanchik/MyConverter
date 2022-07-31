@@ -1,68 +1,53 @@
 package ru.kolodkin.myconverter.converter;
 
+import lombok.extern.log4j.Log4j2;
 import lombok.val;
+import ru.kolodkin.myconverter.converter.read.XMLReader;
+import ru.kolodkin.myconverter.converter.write.JSONWriter;
 import ru.kolodkin.myconverter.model.Ram;
 import ru.kolodkin.myconverter.model.Rams;
-import ru.kolodkin.myconverter.model.RootJson;
 import ru.kolodkin.myconverter.model.RootXml;
-import ru.kolodkin.myconverter.tool.ObjectMapperInstance;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import java.io.*;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Log4j2
 public final class XmlToJson implements Converter {
-    public void convert(FileInputStream input, FileOutputStream output) {
-        val rootXml = readXml(input);
-
-        writeJson(getJsonModel(getNameFirms(rootXml), rootXml.getRamList()), output);
+    public void convert(InputStream input, OutputStream output) {
+        JSONWriter.getInstance().write(
+                transformXmlToJson(XMLReader.getInstance().read(input)),
+                output
+        );
     }
 
-    private ArrayList<Rams> getJsonModel(Set<String> nameAllFirm, List<Ram> ramListFromXml) {
+    private ArrayList<Rams> transformXmlToJson(RootXml rootXml) {
+        if(rootXml == null) {
+            log.error("Пустой xml файл.");
+            return null;
+        }
+
         val ramListForJson = new ArrayList<Rams>();
-        for (val firm : nameAllFirm) {
+        for (val firm : getNameFirms(rootXml)) {
             ramListForJson.add(new Rams(firm));
         }
 
         for (val rams : ramListForJson) {
-            for (val ram : ramListFromXml) {
+            for (val ram : rootXml.getRamList()) {
                 if (ram.getFirm().equals(rams.getFirm())) {
                     rams.getRam().add(Ram.builder()
                             .idRam(ram.getIdRam())
                             .title(ram.getTitle())
                             .releaseYear(ram.getReleaseYear())
                             .specifications(ram.getSpecifications())
-                            .build());
+                            .build()
+                    );
                 }
             }
         }
         return ramListForJson;
-    }
-
-    private void writeJson(List<Rams> ramListForJson, FileOutputStream outputStream) {
-        try {
-            ObjectMapperInstance.getInstance()
-                    .writerWithDefaultPrettyPrinter()
-                    .writeValue(outputStream, new RootJson(ramListForJson));
-        } catch (IOException exception) {
-            throw new RuntimeException("Ошибка при записи json файла... \n" + Arrays.toString(exception.getStackTrace()));
-        }
-    }
-
-    private RootXml readXml(FileInputStream inputStream) {
-        try {
-            return (RootXml) JAXBContext.newInstance(RootXml.class)
-                    .createUnmarshaller()
-                    .unmarshal(inputStream);
-        } catch (JAXBException exception) {
-            throw new RuntimeException("Ошибка при преобразование xml файла в объект... \n"
-                    + Arrays.toString(exception.getStackTrace()));
-        }
     }
 
     /**
@@ -70,9 +55,6 @@ public final class XmlToJson implements Converter {
      * @return Возвращает уникальные названия всех фирм из модели.
      */
     private Set<String> getNameFirms(RootXml rootXml) {
-        if (rootXml == null) {
-            throw new NullPointerException("XML файл пустой.");
-        }
         return rootXml.getRamList()
                 .stream()
                 .map(Ram::getFirm)
