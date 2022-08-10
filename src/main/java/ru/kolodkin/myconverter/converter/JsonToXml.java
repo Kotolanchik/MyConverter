@@ -1,5 +1,6 @@
 package ru.kolodkin.myconverter.converter;
 
+import jakarta.xml.bind.JAXBException;
 import lombok.extern.log4j.Log4j2;
 import lombok.val;
 import ru.kolodkin.myconverter.converter.read.JSONReader;
@@ -8,24 +9,29 @@ import ru.kolodkin.myconverter.model.Ram;
 import ru.kolodkin.myconverter.model.RootJson;
 import ru.kolodkin.myconverter.model.RootXml;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Log4j2
 public final class JsonToXml implements Converter {
-    public void convert(InputStream inputStream, OutputStream outputStream) {
-        XMLWriter.getInstance().write(
-                transformJsonToXml(JSONReader.getInstance().read(inputStream)),
+    private final JSONReader jsonReader = new JSONReader();
+    private final XMLWriter xmlWriter = new XMLWriter();
+
+    public void convert(InputStream inputStream, OutputStream outputStream) throws IOException, JAXBException {
+        xmlWriter.write(
+                transformJsonToXml(jsonReader.read(inputStream)),
                 outputStream
         );
     }
 
     private RootXml transformJsonToXml(RootJson rootJson) {
-        if(rootJson == null) {
-            log.error("Пустой json файл.");
-            return null;
+        if (rootJson == null) {
+            throw new NullPointerException("Пустой json файл.");
         }
 
         val listRam = new ArrayList<Ram>();
@@ -44,6 +50,6 @@ public final class JsonToXml implements Converter {
 
         return new RootXml(listRam.stream()
                 .sorted((Comparator.comparingInt(Ram::getIdRam)))
-                .collect(Collectors.toList()));
+                .collect(toList()));
     }
 }

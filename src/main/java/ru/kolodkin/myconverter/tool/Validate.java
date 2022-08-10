@@ -1,24 +1,26 @@
 package ru.kolodkin.myconverter.tool;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
 public final class Validate {
-    public static boolean validateArgument(String type, String inputPath, String outputPath) {
-        if (FilenameUtils.getExtension(inputPath).equals(FilenameUtils.getExtension("/src/main/document/input.xml"))
-                && FilenameUtils.getExtension(outputPath).equals(FilenameUtils.getExtension("/src/main/document/output.json"))
-                && type.equals("XML2JSON")) {
-            return true;
+    public ImmutablePair<String, Boolean> validateArgument(String type, String inputPath, String outputPath) {
+        if (!(type.equals("XML2JSON") || type.equals("JSON2XML"))) {
+            return ImmutablePair.of("Вы ввели некорректный аргумент: " + type, false);
         }
 
-        if (FilenameUtils.getExtension(inputPath).equals(FilenameUtils.getExtension("/src/main/document/output.json"))
-                && FilenameUtils.getExtension(outputPath).equals(FilenameUtils.getExtension("/src/main/document/input.xml"))
-                && type.equals("JSON2XML")) {
-            return true;
+        if (!(FilenameUtils.getExtension(inputPath).equals(FilenameUtils.getExtension("/src/main/document/input.xml"))
+                || FilenameUtils.getExtension(inputPath).equals(FilenameUtils.getExtension("/src/main/document/output.json")))) {
+            return ImmutablePair.of("Вы ввели некорректный аргумент: " + inputPath, false);
         }
 
-        return false;
+        if (!(FilenameUtils.getExtension(outputPath).equals(FilenameUtils.getExtension("/src/main/document/output.json"))
+                || FilenameUtils.getExtension(outputPath).equals(FilenameUtils.getExtension("/src/main/document/input.xml")))) {
+            return ImmutablePair.of("Вы ввели некорректный аргумент: " + outputPath, false);
+        }
+
+        return ImmutablePair.of("С аргументами всё в порядке.", true);
     }
 }

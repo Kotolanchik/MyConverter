@@ -2,6 +2,7 @@ package ru.kolodkin.myconverter.tool;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
+
 public final class ObjectMapperInstance {
     private static ObjectMapper INSTANCE;
 

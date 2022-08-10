@@ -6,7 +6,6 @@ import lombok.*;
 @Getter
 @Builder
 @NoArgsConstructor
-@RequiredArgsConstructor
 public class Ram {
     @NonNull
     private int idRam;

@@ -1,5 +1,6 @@
 package ru.kolodkin.myconverter;
 
+import jakarta.xml.bind.JAXBException;
 import lombok.extern.log4j.Log4j2;
 import lombok.val;
 import ru.kolodkin.myconverter.factory.ConverterFactory;
@@ -7,23 +8,22 @@ import ru.kolodkin.myconverter.factory.ConverterType;
 import ru.kolodkin.myconverter.tool.Validate;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
 @Log4j2
 public class Main {
     public static void main(String[] args) {
+        val validateArg = Validate.validateArgument(args[0], args[1], args[2]);
         if (args.length != 3) {
-            log.error("Количество аргументов должно быть равно 3. У вас всего: " + args.length);
-            return;
+            throw new ArrayIndexOutOfBoundsException("Вы ввели не все аргументы.");
         }
 
-        if (!Validate.validateArgument(args[0], args[1], args[2])) {
-            log.error("Входные аргументы некорректны.");
-            return;
+        if (!validateArg.right) {
+            throw new IllegalArgumentException(validateArg.left);
         }
 
-        log.info("С расширениями всё в порядке.");
+        log.info(validateArg.left);
 
         try (val inputStream = new FileInputStream(args[1]);
              val outputStream = new FileOutputStream(args[2])) {
@@ -32,12 +32,8 @@ public class Main {
                     .convert(inputStream, outputStream);
 
             log.info("Конвертация прошла успешно.");
-        } catch (FileNotFoundException exception) {
-            log.fatal("Файл не найден... " + exception);
-        } catch (IllegalArgumentException exception) {
-            log.fatal("Неправильный ввод входных данных... ", exception);
-        } catch (Exception exception) {
-            log.fatal("Непредвиденная ошибка... ", exception);
+        } catch (JAXBException | IOException exception) {
+            exception.printStackTrace();
         }
     }
 }

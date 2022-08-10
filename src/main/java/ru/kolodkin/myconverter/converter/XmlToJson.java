@@ -1,5 +1,6 @@
 package ru.kolodkin.myconverter.converter;
 
+import jakarta.xml.bind.JAXBException;
 import lombok.extern.log4j.Log4j2;
 import lombok.val;
 import ru.kolodkin.myconverter.converter.read.XMLReader;
@@ -8,25 +9,29 @@ import ru.kolodkin.myconverter.model.Ram;
 import ru.kolodkin.myconverter.model.Rams;
 import ru.kolodkin.myconverter.model.RootXml;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Set;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toUnmodifiableSet;
 
 @Log4j2
 public final class XmlToJson implements Converter {
-    public void convert(InputStream input, OutputStream output) {
-        JSONWriter.getInstance().write(
-                transformXmlToJson(XMLReader.getInstance().read(input)),
+    private final XMLReader xmlReader = new XMLReader();
+    private final JSONWriter jsonWriter = new JSONWriter();
+
+    public void convert(InputStream input, OutputStream output) throws JAXBException, IOException {
+        jsonWriter.write(
+                transformXmlToJson(xmlReader.read(input)),
                 output
         );
     }
 
     private ArrayList<Rams> transformXmlToJson(RootXml rootXml) {
-        if(rootXml == null) {
-            log.error("Пустой xml файл.");
-            return null;
+        if (rootXml == null) {
+            throw new NullPointerException("Пустой xml файл.");
         }
 
         val ramListForJson = new ArrayList<Rams>();
@@ -47,6 +52,7 @@ public final class XmlToJson implements Converter {
                 }
             }
         }
+
         return ramListForJson;
     }
 
@@ -58,6 +64,6 @@ public final class XmlToJson implements Converter {
         return rootXml.getRamList()
                 .stream()
                 .map(Ram::getFirm)
-                .collect(Collectors.toSet());
+                .collect(toUnmodifiableSet());
     }
 }

@@ -1,11 +1,13 @@
 package ru.kolodkin.myconverter.factory;
 
+import lombok.experimental.UtilityClass;
 import ru.kolodkin.myconverter.converter.Converter;
 import ru.kolodkin.myconverter.converter.JsonToXml;
 import ru.kolodkin.myconverter.converter.XmlToJson;
 
+@UtilityClass
 public final class ConverterFactory {
-    public static Converter createConverter(ConverterType type) {
+    public Converter createConverter(ConverterType type) {
         if (type == ConverterType.JSON2XML) {
             return new JsonToXml();
         }

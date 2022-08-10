@@ -1,50 +1,47 @@
+import jakarta.xml.bind.JAXBException;
 import lombok.val;
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import ru.kolodkin.myconverter.converter.XmlToJson;
 
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 class XmlToJsonTest {
-    final XmlToJson xmlToJson = new XmlToJson();
+    final private XmlToJson xmlToJson = new XmlToJson();
 
     @Test
-    void xmlToJsonNullTest() throws IOException, JSONException {
+    void xmlToJsonNullTest() throws IOException, JSONException, JAXBException {
         try (val fileInputStream = getClass().getResourceAsStream("inputFile/xml/inputNull.xml");
-             val fileOutputStream = new FileOutputStream("src/test/resources/outputFile/json/outputNull.json")) {
-            xmlToJson.convert(fileInputStream, fileOutputStream);
-        }
+             val byteArrayOutputStream = new ByteArrayOutputStream();
+             val expectedFile = getClass().getResourceAsStream("expectedFile/json/inputNull.json")) {
 
-        JSONAssert.assertEquals(
-                FileUtils.readFileToString(
-                        new File("src/test/resources/expectedFile/json/inputNull.json"),
-                        "utf-8"),
-                FileUtils.readFileToString(
-                        new File("src/test/resources/outputFile/json/outputNull.json"),
-                        "utf-8"),
-                true
-        );
+            xmlToJson.convert(fileInputStream, byteArrayOutputStream);
+
+            JSONAssert.assertEquals(
+                    IOUtils.toString(expectedFile, StandardCharsets.UTF_8),
+                    byteArrayOutputStream.toString(StandardCharsets.UTF_8),
+                    true
+            );
+        }
     }
 
     @Test
-    void xmlToJsonStandardTest() throws IOException, JSONException {
+    void xmlToJsonStandardTest() throws IOException, JSONException, JAXBException {
         try (val fileInputStream = getClass().getResourceAsStream("inputFile/xml/input.xml");
-             val fileOutputStream = new FileOutputStream("src/test/resources/outputFile/json/output.json")) {
-            xmlToJson.convert(fileInputStream, fileOutputStream);
-        }
+             val byteArrayOutputStream = new ByteArrayOutputStream();
+             val expectedFile = getClass().getResourceAsStream("expectedFile/json/input.json")) {
 
-        JSONAssert.assertEquals(
-                FileUtils.readFileToString(
-                        new File("src/test/resources/expectedFile/json/input.json"),
-                        "utf-8"),
-                FileUtils.readFileToString(
-                        new File("src/test/resources/outputFile/json/output.json"),
-                        "utf-8"),
-                true
-        );
+            xmlToJson.convert(fileInputStream, byteArrayOutputStream);
+
+            JSONAssert.assertEquals(
+                    IOUtils.toString(expectedFile, StandardCharsets.UTF_8),
+                    byteArrayOutputStream.toString(StandardCharsets.UTF_8),
+                    true
+            );
+        }
     }
 }
