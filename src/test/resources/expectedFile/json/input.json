@@ -3,14 +3,11 @@
     "firm" : "DNS",
     "ram" : [ {
       "idRam" : 1,
-      "firm" : null,
       "title" : "bbb",
       "releaseYear" : 20055,
       "specifications" : {
         "clockFrequency" : 2000,
         "memory" : 2000
-
-
       }
     } ]
   } ]

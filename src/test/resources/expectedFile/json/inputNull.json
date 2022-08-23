@@ -4,7 +4,7 @@
     "ram" : [ {
       "idRam" : 0,
 
-          "title" : "","firm" : null,
+          "title" : "",
       "releaseYear" : 0,
       "specifications" : {
         "clockFrequency" : 0,

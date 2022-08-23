@@ -1,4 +1,4 @@
-package ru.kolodkin.myconverter.converter.write;
+package ru.kolodkin.myconverter.tool.mapper;
 
 import ru.kolodkin.myconverter.model.Rams;
 import ru.kolodkin.myconverter.model.RootJson;
@@ -8,10 +8,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
-public final class JSONWriter implements IWriter<List<Rams>> {
-    @Override
-    public void write(List<Rams> model, OutputStream outputStream) throws IOException {
-        ObjectMapperInstance.getInstance()
+public final class JSONWriter {
+    public static void write(final List<Rams> model, final OutputStream outputStream) throws IOException {
+        ObjectMapperInstance.getObjectMapper()
                 .writerWithDefaultPrettyPrinter()
                 .writeValue(outputStream, new RootJson(model));
     }

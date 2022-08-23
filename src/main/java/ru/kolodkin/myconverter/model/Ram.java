@@ -1,6 +1,7 @@
 package ru.kolodkin.myconverter.model;
 
 import lombok.*;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 @Setter
 @Getter
@@ -9,6 +10,7 @@ import lombok.*;
 public class Ram {
     @NonNull
     private int idRam;
+    @JsonIgnore
     private String firm;
     @NonNull
     private String title;

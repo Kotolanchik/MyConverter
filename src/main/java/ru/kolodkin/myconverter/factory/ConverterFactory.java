@@ -7,10 +7,7 @@ import ru.kolodkin.myconverter.converter.XmlToJson;
 
 @UtilityClass
 public final class ConverterFactory {
-    public Converter createConverter(ConverterType type) {
-        if (type == ConverterType.JSON2XML) {
-            return new JsonToXml();
-        }
-        return new XmlToJson();
+    public Converter createConverter(final ConverterType type) {
+        return type == ConverterType.JSON2XML ? new JsonToXml() : new XmlToJson();
     }
 }

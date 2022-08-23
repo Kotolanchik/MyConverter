@@ -1,18 +1,13 @@
 package ru.kolodkin.myconverter.tool;
 
+import lombok.experimental.UtilityClass;
 import org.codehaus.jackson.map.ObjectMapper;
 
-
+@UtilityClass
 public final class ObjectMapperInstance {
-    private static ObjectMapper INSTANCE;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
-    private ObjectMapperInstance() {
-    }
-
-    public static synchronized ObjectMapper getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new ObjectMapper();
-        }
-        return INSTANCE;
+    public ObjectMapper getObjectMapper() {
+        return objectMapper;
     }
 }

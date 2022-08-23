@@ -10,7 +10,8 @@ import ru.kolodkin.myconverter.converter.JsonToXml;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 class JsonToXmlTest {
     final private JsonToXml jsonToXml = new JsonToXml();
@@ -31,8 +32,8 @@ class JsonToXmlTest {
             jsonToXml.convert(fileInputStream, byteArrayOutputStream);
 
             XMLAssert.assertXMLEqual(
-                    IOUtils.toString(expectedFile,StandardCharsets.UTF_8),
-                    byteArrayOutputStream.toString(StandardCharsets.UTF_8)
+                    IOUtils.toString(expectedFile, UTF_8),
+                    byteArrayOutputStream.toString(UTF_8)
             );
         }
     }
@@ -46,8 +47,8 @@ class JsonToXmlTest {
             jsonToXml.convert(fileInputStream, byteArrayOutputStream);
 
             XMLAssert.assertXMLEqual(
-                    IOUtils.toString(expectedFile, StandardCharsets.UTF_8),
-                    byteArrayOutputStream.toString(StandardCharsets.UTF_8)
+                    IOUtils.toString(expectedFile, UTF_8),
+                    byteArrayOutputStream.toString(UTF_8)
             );
         }
     }
