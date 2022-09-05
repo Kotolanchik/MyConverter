@@ -1,6 +1,7 @@
 package ru.kolodkin.myconverter.converter;
 
 import jakarta.xml.bind.JAXBException;
+import lombok.NonNull;
 import lombok.val;
 import ru.kolodkin.myconverter.model.Ram;
 import ru.kolodkin.myconverter.model.RootJson;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 import static java.util.stream.Collectors.toList;
 import static java.util.Comparator.comparingInt;
 
-public final class JsonToXml extends Converter<RootXml, RootJson> {
+public final class JsonToXml implements Converter<RootXml, RootJson> {
     public void convert(InputStream inputStream, OutputStream outputStream) throws IOException, JAXBException {
         XMLWriter.write(
                 transform(JSONReader.read(inputStream)),
@@ -25,9 +26,7 @@ public final class JsonToXml extends Converter<RootXml, RootJson> {
         );
     }
 
-    RootXml transform(final RootJson rootJson) {
-        Validate.validateNullObject(rootJson);
-
+    public RootXml transform(@NonNull final RootJson rootJson) {
         val listRam = new ArrayList<Ram>();
         rootJson.getRams()
                 .forEach(rams -> rams.getRam()
